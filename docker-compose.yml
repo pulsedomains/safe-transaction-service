@@ -1,41 +1,56 @@
 version: '3.5'
 
-volumes:
-  nginx-shared:
-
 services:
-  nginx:
-    image: nginx:alpine
-    hostname: nginx
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - nginx-shared:/nginx
-    depends_on:
-      - web
+  # nginx:
+  #   image: nginx:alpine
+  #   hostname: nginx
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - nginx-shared:/nginx
+  #   depends_on:
+  #     - web
 
   redis:
+    hostname: txs_redis
+    container_name: safe_txs_redis
     image: redis:alpine
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
+    networks:
+      - gnosis.safe
     command:
       - --appendonly yes
 
   rabbitmq:
+    hostname: txs_rabbitmq
+    container_name: safe_txs_rabbitmq
     image: rabbitmq:alpine
-    ports:
-      - "5672:5672"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+    networks:
+      - gnosis.safe
+    # ports:
+    #   - "5672:5672"
 
   db:
+    hostname: txs_db
+    container_name: safe_txs_db
     image: postgres:13-alpine
-    ports:
-      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    # ports:
+    #   - "5432:5432"
+    networks:
+      - gnosis.safe
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
 
   web:
+    hostname: txs_web
+    container_name: safe_txs_web
     build:
       context: .
       dockerfile: docker/web/Dockerfile
@@ -46,12 +61,16 @@ services:
       - redis
     working_dir: /app
     ports:
-      - "8888:8888"
+      - "6001:8888"
     volumes:
-      - nginx-shared:/nginx
+      - ./data/nginx:/nginx
+    networks:
+      - gnosis.safe
     command: docker/web/run_web.sh
 
   indexer-worker: &worker
+    hostname: txs_indexer
+    container_name: safe_txs_indexer
     build:
       context: .
       dockerfile: docker/web/Dockerfile
@@ -64,25 +83,39 @@ services:
       - db
       - redis
       - rabbitmq
+    networks:
+      - gnosis.safe
     command: docker/web/celery/worker/run.sh
 
   contracts-tokens-worker:
     <<: *worker
+    hostname: txs_contracts_tokens
+    container_name: safe_txs_contract_tokens
     environment:
       WORKER_QUEUES: "contracts,tokens"
 
   notifications-webhooks-worker:
     <<: *worker
+    hostname: txs_noti
+    container_name: safe_txs_noti
     environment:
       WORKER_QUEUES: "notifications,webhooks"
 
   scheduler:
     <<: *worker
+    hostname: txs_scheduler
+    container_name: safe_txs_scheduler
     command: docker/web/celery/scheduler/run.sh
 
   flower:
     <<: *worker
+    hostname: txs_flower
+    container_name: safe_txs_flower
     command: docker/web/celery/flower/run.sh
-    ports:
-      - "5555:5555"
+    # ports:
+    #   - "5555:5555"
 
+networks:
+  gnosis.safe:
+    name: gnosis.safe
+    driver: bridge

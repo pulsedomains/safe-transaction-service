@@ -9,10 +9,10 @@ from hexbytes import HexBytes
 class EnsClient:
     def __init__(self, network_id: int):
         base_url = "https://api.thegraph.com/subgraphs/name/ensdomains/"
-        if network_id == 3:  # Ropsten
-            url = base_url + "ensropsten"
-        elif network_id == 4:  # Rinkeby
-            url = base_url + "ensrinkeby"
+        if network_id == 369:  # PulseChain
+            url = "https://graph.pulse.domains/subgraphs/name/graphprotocol/pns"
+        elif network_id == 943:  # PulseChain Testnet
+            url = "https://v4b.graph.pulse.domains/subgraphs/name/graphprotocol/tpns"
         elif network_id == 5:  # Goerli
             url = base_url + "ensgoerli"
         else:  # Fallback to mainnet

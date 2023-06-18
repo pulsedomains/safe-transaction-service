@@ -29,7 +29,6 @@ from gnosis.eth.oracles import (
     PoolTogetherOracle,
     PriceOracle,
     PricePoolOracle,
-    SuperfluidOracle,
     SushiswapOracle,
     UnderlyingToken,
     UniswapV2Oracle,
@@ -110,8 +109,6 @@ class PriceService:
         if oracles:
             if AaveOracle.is_available(self.ethereum_client):
                 oracles += (AaveOracle(self.ethereum_client, oracles[0]),)
-            if SuperfluidOracle.is_available(self.ethereum_client):
-                oracles += (SuperfluidOracle(self.ethereum_client, oracles[0]),)
 
         return oracles
 
@@ -140,62 +137,8 @@ class PriceService:
             if Oracle.is_available(self.ethereum_client)
         )
 
-    def get_avalanche_usd_price(self) -> float:
-        try:
-            return self.kraken_client.get_avax_usd_price()
-        except CannotGetPrice:
-            return self.coingecko_client.get_avax_usd_price()
-
-    def get_aurora_usd_price(self) -> float:
-        try:
-            return self.kucoin_client.get_aurora_usd_price()
-        except CannotGetPrice:
-            return self.coingecko_client.get_aoa_usd_price()
-
-    def get_cardano_usd_price(self) -> float:
-        try:
-            return self.kraken_client.get_ada_usd_price()
-        except CannotGetPrice:
-            return self.coingecko_client.get_ada_usd_price()
-
-    def get_algorand_usd_price(self) -> float:
-        return self.kraken_client.get_algo_usd_price()
-
-    def get_binance_usd_price(self) -> float:
-        try:
-            return self.kucoin_client.get_bnb_usd_price()
-        except CannotGetPrice:
-            return self.coingecko_client.get_bnb_usd_price()
-
-    def get_ewt_usd_price(self) -> float:
-        try:
-            return self.kraken_client.get_ewt_usd_price()
-        except CannotGetPrice:
-            try:
-                return self.kucoin_client.get_ewt_usd_price()
-            except CannotGetPrice:
-                return self.coingecko_client.get_ewt_usd_price()
-
-    def get_matic_usd_price(self) -> float:
-        try:
-            return self.kraken_client.get_matic_usd_price()
-        except CannotGetPrice:
-            try:
-                return self.kucoin_client.get_matic_usd_price()
-            except CannotGetPrice:
-                return self.coingecko_client.get_matic_usd_price()
-
-    def get_cronos_usd_price(self) -> float:
-        return self.kucoin_client.get_cro_usd_price()
-
-    def get_xdc_usd_price(self) -> float:
-        return self.kucoin_client.get_xdc_usd_price()
-
-    def get_kcs_usd_price(self) -> float:
-        try:
-            return self.kucoin_client.get_kcs_usd_price()
-        except CannotGetPrice:
-            return self.coingecko_client.get_kcs_usd_price()
+    def get_pls_usd_price(self) -> float:
+        return self.coingecko_client.get_pls_usd_price()
 
     @cachedmethod(cache=operator.attrgetter("cache_ether_usd_price"))
     @cache_memoize(60 * 30, prefix="balances-get_ether_usd_price")  # 30 minutes
@@ -220,75 +163,11 @@ class PriceService:
 
         :return: USD price for Ether
         """
-        if self.ethereum_network == EthereumNetwork.GNOSIS:
-            try:
-                return self.kraken_client.get_dai_usd_price()
-            except CannotGetPrice:
-                return 1  # DAI/USD should be close to 1
-        elif self.ethereum_network in (
-            EthereumNetwork.ENERGY_WEB_CHAIN,
-            EthereumNetwork.ENERGY_WEB_VOLTA_TESTNET,
+        if self.ethereum_network in (
+            EthereumNetwork.PULSECHAIN_MAINNET,
+            EthereumNetwork.PULSECHAIN_TESTNET,
         ):
-            return self.get_ewt_usd_price()
-        elif self.ethereum_network in (EthereumNetwork.POLYGON, EthereumNetwork.MUMBAI):
-            return self.get_matic_usd_price()
-        elif self.ethereum_network == EthereumNetwork.BINANCE_SMART_CHAIN_MAINNET:
-            return self.get_binance_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.GATHER_DEVNET_NETWORK,
-            EthereumNetwork.GATHER_TESTNET_NETWORK,
-            EthereumNetwork.GATHER_MAINNET_NETWORK,
-        ):
-            return self.coingecko_client.get_gather_usd_price()
-        elif self.ethereum_network == EthereumNetwork.AVALANCHE_C_CHAIN:
-            return self.get_avalanche_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.MILKOMEDA_C1_TESTNET,
-            EthereumNetwork.MILKOMEDA_C1_MAINNET,
-        ):
-            return self.get_cardano_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.AURORA_MAINNET,
-            EthereumNetwork.ARBITRUM_RINKEBY,
-        ):
-            return self.get_aurora_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.CRONOS_TESTNET,
-            EthereumNetwork.CRONOS_MAINNET_BETA,
-        ):
-            return self.get_cronos_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.FUSE_MAINNET,
-            EthereumNetwork.FUSE_SPARKNET,
-        ):
-            return self.coingecko_client.get_fuse_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.KCC_MAINNET,
-            EthereumNetwork.KCC_TESTNET,
-        ):
-            return self.get_kcs_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.METIS_ANDROMEDA_MAINNET,
-            EthereumNetwork.METIS_GOERLI_TESTNET,
-            EthereumNetwork.METIS_STARDUST_TESTNET,
-        ):
-            return self.coingecko_client.get_metis_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.MILKOMEDA_A1_TESTNET,
-            EthereumNetwork.MILKOMEDA_A1_MAINNET,
-        ):
-            return self.get_algorand_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.CELO_MAINNET,
-            EthereumNetwork.CELO_ALFAJORES_TESTNET,
-            EthereumNetwork.CELO_BAKLAVA_TESTNET,
-        ):
-            return self.kucoin_client.get_celo_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.XINFIN_XDC_NETWORK,
-            EthereumNetwork.XDC_APOTHEM_NETWORK,
-        ):
-            return self.get_xdc_usd_price()
+            return self.get_pls_usd_price()
         else:
             return self.get_ether_usd_price()
 

@@ -20,19 +20,8 @@ logger = logging.getLogger(__name__)
 
 class CoingeckoClient:
     ASSET_BY_NETWORK = {
-        EthereumNetwork.ARBITRUM_ONE: "arbitrum-one",
-        EthereumNetwork.AURORA_MAINNET: "aurora",
-        EthereumNetwork.AVALANCHE_C_CHAIN: "avalanche",
-        EthereumNetwork.BINANCE_SMART_CHAIN_MAINNET: "binance-smart-chain",
-        EthereumNetwork.FUSE_MAINNET: "fuse",
-        EthereumNetwork.GNOSIS: "xdai",
-        EthereumNetwork.KCC_MAINNET: "kucoin-community-chain",
         EthereumNetwork.MAINNET: "ethereum",
-        EthereumNetwork.METIS_ANDROMEDA_MAINNET: "metis-andromeda",
-        EthereumNetwork.OPTIMISM: "optimistic-ethereum",
-        EthereumNetwork.POLYGON: "polygon-pos",
-        EthereumNetwork.POLYGON_ZKEVM: "polygon-zkevm",
-        EthereumNetwork.CELO_MAINNET: "celo",
+        EthereumNetwork.PULSECHAIN_MAINNET: "pulsechain",
     }
     base_url = "https://api.coingecko.com/"
 
@@ -115,32 +104,5 @@ class CoingeckoClient:
         if token_info:
             return token_info["image"]["large"]
 
-    def get_ada_usd_price(self) -> float:
-        return self.get_price("cardano")
-
-    def get_avax_usd_price(self) -> float:
-        return self.get_price("avalanche-2")
-
-    def get_aoa_usd_price(self) -> float:
-        return self.get_price("aurora")
-
-    def get_bnb_usd_price(self) -> float:
-        return self.get_price("binancecoin")
-
-    def get_ewt_usd_price(self) -> float:
-        return self.get_price("energy-web-token")
-
-    def get_matic_usd_price(self) -> float:
-        return self.get_price("matic-network")
-
-    def get_gather_usd_price(self) -> float:
-        return self.get_price("gather")
-
-    def get_fuse_usd_price(self) -> float:
-        return self.get_price("fuse-network-token")
-
-    def get_kcs_usd_price(self) -> float:
-        return self.get_price("kucoin-shares")
-
-    def get_metis_usd_price(self) -> float:
-        return self.get_price("metis-token")
+    def get_pls_usd_price(self) -> float:
+        return self.get_price("pulsechain")

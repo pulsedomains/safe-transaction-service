@@ -27,15 +27,6 @@ class BinanceClient:  # pragma: no cover
         except (ValueError, IOError) as e:
             raise CannotGetPrice from e
 
-    def get_ada_usd_price(self) -> float:
-        return self._get_price("ADAUSDT")
-
-    def get_aurora_usd_price(self):
-        return self._get_price("NEARUSDT")
-
-    def get_bnb_usd_price(self) -> float:
-        return self._get_price("BNBUSDT")
-
     def get_ether_usd_price(self) -> float:
         """
         :return: current USD price for Ethereum
@@ -43,9 +34,3 @@ class BinanceClient:  # pragma: no cover
         """
         return self._get_price("ETHUSDT")
 
-    def get_matic_usd_price(self) -> float:
-        """
-        :return: current USD price for MATIC
-        :raises: CannotGetPrice
-        """
-        return self._get_price("MATICUSDT")

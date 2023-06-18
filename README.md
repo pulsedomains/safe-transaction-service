@@ -17,6 +17,8 @@ a transaction that is pending to be sent to the blockchain.
 
 [Swagger (Mainnet version)](https://safe-transaction-mainnet.safe.global/)
 [Swagger (Göerli version)](https://safe-transaction-goerli.safe.global/)
+[Swagger (PulseChain version)](https://safe-transaction.pulse.domains/)
+[Swagger (PulseChain Testnet version)](https://t.safe-transaction.pulse.domains/)
 
 ## Index of contents
 
@@ -178,3 +180,18 @@ The `banned` field in the `SafeContract` model is used to prevent indexing of ce
 
 ## Contributors
 [See contributors](https://github.com/safe-global/safe-transaction-service/graphs/contributors)
+
+
+## Fix nginx issue
+
+```shell
+sudo chmod -R 755 gnosis/safe-transaction-service/data/nginx/staticfiles/
+sudo chown -R $USER:$USER gnosis/safe-transaction-service/data/nginx/staticfiles/drf-yasg/
+sudo chown -R $USER:$USER gnosis/safe-transaction-service/data/nginx/staticfiles/admin/
+sudo chown -R $USER:$USER gnosis/safe-transaction-service/data/nginx/staticfiles/admin/css/
+sudo chown -R $USER:$USER gnosis/safe-transaction-service/data/nginx/staticfiles/admin/img/
+sudo chown -R $USER:$USER gnosis/safe-transaction-service/data/nginx/staticfiles/admin/js/
+
+sudo gpasswd -a www-data ubuntu
+sudo nginx -s reload
+```

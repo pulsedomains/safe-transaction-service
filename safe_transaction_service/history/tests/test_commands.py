@@ -381,21 +381,15 @@ class TestCommands(TestCase):
             first_safe_block_deployed + 20,
         )
 
-    def test_setup_service_rinkeby(self):
-        self._test_setup_service(EthereumNetwork.RINKEBY)
-
     def test_setup_service_goerli(self):
         self._test_setup_service(EthereumNetwork.GOERLI)
-
-    def test_setup_service_kovan(self):
-        self._test_setup_service(EthereumNetwork.KOVAN)
 
     @mock.patch.object(EthereumClient, "get_network", autospec=True)
     def test_setup_service_not_valid_network(
         self, ethereum_client_get_network_mock: MagicMock
     ):
         command = "setup_service"
-        for return_value in (EthereumNetwork.ROPSTEN, EthereumNetwork.UNKNOWN):
+        for return_value in (EthereumNetwork.UNKNOWN):
             ethereum_client_get_network_mock.return_value = return_value
             buf = StringIO()
             call_command(command, stdout=buf)
@@ -431,10 +425,10 @@ class TestCommands(TestCase):
         self.assertIn("EthereumRPC chainId 1 looks good", buf.getvalue())
 
         # Use different chainId
-        get_chain_id_mock.return_value = EthereumNetwork.GNOSIS.value
+        get_chain_id_mock.return_value = EthereumNetwork.PULSECHAIN_MAINNET.value
         with self.assertRaisesMessage(
             CommandError,
-            "EthereumRPC chainId 100 does not match previously used chainId 1",
+            "EthereumRPC chainId 369 does not match previously used chainId 1",
         ):
             call_command(command)
 

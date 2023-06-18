@@ -35,18 +35,3 @@ class TestMigrations(TestCase):
             token_list.url, "https://tokens.coingecko.com/uniswap/all.json"
         )
         self.assertEqual(token_list.description, "Coingecko")
-
-    @mock.patch(
-        "safe_transaction_service.tokens.migrations.0010_tokenlist.get_ethereum_network",
-        return_value=EthereumNetwork.AIOZ_NETWORK,
-    )
-    def test_migration_forward_0010_network_without_data(
-        self, get_ethereum_network_mock: MagicMock
-    ):
-        old_state = self.migrator.apply_initial_migration(
-            ("tokens", "0009_token_token_spam_idx")
-        )
-
-        new_state = self.migrator.apply_tested_migration(("tokens", "0010_tokenlist"))
-        TokenList = new_state.apps.get_model("tokens", "TokenList")
-        self.assertEqual(TokenList.objects.count(), 0)

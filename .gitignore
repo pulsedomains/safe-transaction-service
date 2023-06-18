@@ -125,3 +125,4 @@ safe_transaction_service/media
 # User-specific stuff:
 .idea/
 .vscode/
+data/
