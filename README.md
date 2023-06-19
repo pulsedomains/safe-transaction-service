@@ -1,5 +1,5 @@
-![Build Status](https://github.com/safe-global/safe-transaction-service/workflows/Python%20CI/badge.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/safe-global/safe-transaction-service/badge.svg?branch=master)](https://coveralls.io/github/safe-global/safe-transaction-service?branch=master)
+![Build Status](https://github.com/pulsedomains/safe-transaction-service/workflows/Python%20CI/badge.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/pulsedomains/safe-transaction-service/badge.svg?branch=master)](https://coveralls.io/github/pulsedomains/safe-transaction-service?branch=master)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 ![Python 3.10](https://img.shields.io/badge/Python-3.10-blue.svg)
 ![Django 4](https://img.shields.io/badge/Django-4-blue.svg)
@@ -72,7 +72,7 @@ For more parameters check [base.py](config/settings/base.py) file.
 
 - If the network is not supported yet [contracts can be deployed using the deployment instructions
 ](https://github.com/safe-global/safe-contracts/tree/v1.3.0/contracts)
-and then a PR should be provided [adding the deployment block number and the address](https://github.com/safe-global/safe-eth-py/blob/master/gnosis/safe/addresses.py) (address will be the same for every network).
+and then a PR should be provided [adding the deployment block number and the address](https://github.com/pulsedomains/safe-pls-py/blob/master/gnosis/safe/addresses.py) (address will be the same for every network).
 - Only `ProxyFactory` and `GnosisSafeL2` must be configured. `+L2` must be added to the `Safe L2` contract versions, so the service knows the contract can be indexed using events. For us to accept the PR network must be on https://github.com/ethereum-lists/chains .
 - You can always set this up later using the **admin panel** if your network is not supported, going to the **Master Copies** and **Proxy Factories**.
 - **We recommend** using event indexing for every network where transaction fees are not relevant, so a tracing node is not required and everything can be indexed using events with the `Safe L2` version.
@@ -140,9 +140,9 @@ docker exec -it safe-transaction-service-web-1 python manage.py createsuperuser
 ```
 
 ## Safe Contract ABIs and addresses
-- [v1.3.0](https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/gnosis_safe.json)
-- [v1.3.0 L2](https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/gnosis_safe_l2.json)
-- [Other related contracts and previous Safe versions](https://github.com/safe-global/safe-deployments/blob/main/src/assets)
+- [v1.3.0](https://github.com/pulsedomains/safe-deployments/blob/main/src/assets/v1.3.0/gnosis_safe.json)
+- [v1.3.0 L2](https://github.com/pulsedomains/safe-deployments/blob/main/src/assets/v1.3.0/gnosis_safe_l2.json)
+- [Other related contracts and previous Safe versions](https://github.com/pulsedomains/safe-deployments/blob/main/src/assets)
 
 ## Troubleshooting
 
@@ -162,14 +162,14 @@ When indexed every block is marked as `not confirmed` unless it has some depth (
 changed before it reaches the desired number of `confirmations`, if that's the case, all blocks from that block and the transactions related
 are deleted and indexing is restarted to the last `confirmed` block.
 
-### If I add my chain to [safe-eth-py](https://github.com/safe-global/safe-eth-py/blob/master/gnosis/safe/addresses.py) will you support it?
+### If I add my chain to [safe-pls-py](https://github.com/pulsedomains/safe-pls-py/blob/master/gnosis/safe/addresses.py) will you support it?
 No, for a chain to be supported we need to set up a dedicated infra for that network
 and [have a proper RPC](https://docs.safe.global/learn/infrastructure/rpc-requirements)
 
 ### How can I interact with service?
 Aside from using standard HTTP requests:
-- [Safe API Kit](https://github.com/safe-global/safe-core-sdk/tree/main/packages/safe-service-client)
-- [Safe-eth-py](https://github.com/safe-global/safe-eth-py)
+- [Safe API Kit](https://github.com/pulsedomains/safe-core-sdk/tree/main/packages/safe-service-client)
+- [Safe-pls-py](https://github.com/pulsedomains/safe-pls-py)
 - [Safe CLI](https://github.com/5afe/safe-cli): It has a `tx-service` mode to gather offchain signatures.
 
 ### What chains do you officially support?
@@ -179,7 +179,7 @@ https://docs.safe.global/learn/safe-core/safe-core-api/available-services
 The `banned` field in the `SafeContract` model is used to prevent indexing of certain Safes that have an unsupported `MasterCopy` or unverified proxies that have issues during indexing. This field does not remove the banned Safe and indexing can be resumed once the issue has been resolved.
 
 ## Contributors
-[See contributors](https://github.com/safe-global/safe-transaction-service/graphs/contributors)
+[See contributors](https://github.com/pulsedomains/safe-transaction-service/graphs/contributors)
 
 
 ## Fix nginx issue

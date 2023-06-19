@@ -8,7 +8,7 @@ from hexbytes import HexBytes
 
 
 class HexField(forms.CharField):
-    # TODO Move this to safe-eth-py
+    # TODO Move this to safe-pls-py
     default_error_messages = {
         "invalid": _("Enter a valid hexadecimal."),
     }
