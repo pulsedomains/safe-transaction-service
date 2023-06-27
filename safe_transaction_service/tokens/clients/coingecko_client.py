@@ -3,11 +3,11 @@ from functools import lru_cache
 from typing import Any, Dict, Optional
 from urllib.parse import urljoin
 
-import requests
 from eth_typing import ChecksumAddress
 
 from gnosis.eth import EthereumNetwork
 
+from safe_transaction_service.tokens.clients.base_client import BaseHTTPClient
 from safe_transaction_service.tokens.clients.exceptions import (
     CannotGetPrice,
     Coingecko404,
@@ -18,15 +18,17 @@ from safe_transaction_service.tokens.clients.exceptions import (
 logger = logging.getLogger(__name__)
 
 
-class CoingeckoClient:
+class CoingeckoClient(BaseHTTPClient):
     ASSET_BY_NETWORK = {
         EthereumNetwork.MAINNET: "ethereum",
         EthereumNetwork.PULSECHAIN_MAINNET: "pulsechain",
     }
     base_url = "https://api.coingecko.com/"
 
-    def __init__(self, network: Optional[EthereumNetwork] = None):
-        self.http_session = requests.Session()
+    def __init__(
+        self, network: Optional[EthereumNetwork] = None, request_timeout: int = 10
+    ):
+        super().__init__(request_timeout=request_timeout)
         self.asset_platform = self.ASSET_BY_NETWORK.get(network, "ethereum")
 
     @classmethod
@@ -35,7 +37,7 @@ class CoingeckoClient:
 
     def _do_request(self, url: str) -> Dict[str, Any]:
         try:
-            response = self.http_session.get(url, timeout=10)
+            response = self.http_session.get(url, timeout=self.request_timeout)
             if not response.ok:
                 if response.status_code == 404:
                     raise Coingecko404(url)

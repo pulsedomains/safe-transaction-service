@@ -37,7 +37,7 @@ services:
   db:
     hostname: txs_db
     container_name: safe_txs_db
-    image: postgres:13-alpine
+    image: postgres:14-alpine
     volumes:
       - ./data/db:/var/lib/postgresql/data
     # ports:

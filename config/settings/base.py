@@ -50,6 +50,7 @@ ENABLE_ANALYTICS = env("ENABLE_ANALYTICS", default=False)
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
+DB_STATEMENT_TIMEOUT = env.int("DB_STATEMENT_TIMEOUT", 60_000)
 DATABASES = {
     "default": env.db("DATABASE_URL"),
 }
@@ -61,6 +62,7 @@ DATABASES["default"]["OPTIONS"] = {
     # https://github.com/jneight/django-db-geventpool#settings
     "MAX_CONNS": DB_MAX_CONNS,
     "REUSE_CONNS": env.int("DB_REUSE_CONNS", default=DB_MAX_CONNS),
+    "options": f"-c statement_timeout={DB_STATEMENT_TIMEOUT}",
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -468,6 +470,10 @@ TOKENS_ENS_IMAGE_URL = env.str(
 TOKENS_ERC20_GET_BALANCES_BATCH = env.int(
     "TOKENS_ERC20_GET_BALANCES_BATCH", default=2_000
 )  # Number of tokens to get balances from in the same request. From 2_500 some nodes raise HTTP 413
+
+TOKEN_ETH_PRICE_TTL = env.int(
+    "TOKEN_ETH_PRICE_TTL", default=60 * 30  # 30 minutes
+)  # Expiration time for token eth price
 
 # Notifications
 # ------------------------------------------------------------------------------
