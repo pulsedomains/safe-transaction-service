@@ -126,3 +126,4 @@ safe_transaction_service/media
 .idea/
 .vscode/
 data/
+Makefile
